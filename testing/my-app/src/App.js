@@ -187,7 +187,7 @@ function Home() {
       <header className={`glass-nav px-5 py-4 sm:px-8 ${scrolled ? "scrolled" : ""}`}>
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
           <Brand compact />
-          <nav className="nav-links flex items-center gap-8 text-sm font-semibold text-forest">
+          <nav className="nav-links flex items-center gap-4 sm:gap-8 text-sm font-semibold text-forest">
             <a className="transition hover:text-sage" href="#services" onClick={scrollToSection("services")}>
               Services
             </a>
@@ -310,12 +310,20 @@ function Home() {
             </div>
           </div>
 
-          <Link
-            className="mt-9 inline-flex text-sm font-semibold text-white/80 transition hover:text-white"
-            to="/dashboard"
-          >
-            Doctor Access
-          </Link>
+          <div className="mt-9 flex flex-wrap items-center gap-5">
+            <Link
+              className="inline-flex text-sm font-semibold text-white/80 transition hover:text-white"
+              to="/dashboard"
+            >
+              Doctor Access
+            </Link>
+            <Link
+              className="inline-flex text-sm font-semibold text-white/80 transition hover:text-white"
+              to="/book"
+            >
+              Book Appointment
+            </Link>
+          </div>
 
           <p className="mt-10 border-t border-white/15 pt-7 text-center text-sm text-white/65">
             &copy; 2026 Dentique Smiles. All rights reserved.
