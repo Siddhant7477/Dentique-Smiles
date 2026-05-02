@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { Calendar, Clock, Mail, MessageSquare, Phone, User } from "lucide-react";
+import { Calendar, Clock, Mail, MapPin, MessageSquare, Phone, User } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import {
@@ -34,6 +34,39 @@ async function parseError(response) {
   }
 }
 
+function useReveal() {
+  useEffect(() => {
+    const elements = Array.from(document.querySelectorAll(".reveal"));
+    const fallback = window.setTimeout(() => {
+      elements.forEach((element) => element.classList.add("visible"));
+    }, 700);
+
+    if (!("IntersectionObserver" in window)) {
+      elements.forEach((element) => element.classList.add("visible"));
+      window.clearTimeout(fallback);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.14 }
+    );
+
+    elements.forEach((element) => observer.observe(element));
+    return () => {
+      window.clearTimeout(fallback);
+      observer.disconnect();
+    };
+  }, []);
+}
+
 function Field({ children, icon }) {
   return (
     <label className="block">
@@ -48,6 +81,9 @@ function Field({ children, icon }) {
 export default function BookAppointment() {
   const [form, setForm] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
+  const [showSubmitToast, setShowSubmitToast] = useState(false);
+
+  useReveal();
 
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -81,6 +117,7 @@ export default function BookAppointment() {
       }
 
       toast.success("Appointment request submitted successfully");
+      setShowSubmitToast(true);
       setForm(initialForm);
     } catch (error) {
       toast.error(error.message || "Failed to submit appointment request");
@@ -89,8 +126,19 @@ export default function BookAppointment() {
     }
   };
 
+  useEffect(() => {
+    if (!showSubmitToast) return undefined;
+
+    const timeout = window.setTimeout(() => setShowSubmitToast(false), 2800);
+    return () => window.clearTimeout(timeout);
+  }, [showSubmitToast]);
+
   return (
     <div className="min-h-screen bg-[#FAFAF8] p-6 md:p-12">
+      <div className={`booking-toast ${showSubmitToast ? "show" : ""}`}>
+        Appointment request submitted successfully
+      </div>
+
       <div className="mx-auto max-w-5xl">
         <header className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <Link to="/" className="text-sm font-medium text-[#4A9B7F] hover:underline">
@@ -110,81 +158,105 @@ export default function BookAppointment() {
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-3xl">
               {"\uD83E\uDDB7"}
             </div>
-            <h1 className="mt-8 font-serif text-4xl leading-tight text-[#2C2C2C] sm:text-5xl">
+            <h1 className="reveal mt-8 font-serif text-4xl leading-tight text-[#2C2C2C] sm:text-5xl">
               Book Appointment
             </h1>
-            <p className="mt-5 text-base leading-8 text-[#34445B]">
+            <p className="reveal mt-5 text-base leading-8 text-[#34445B]">
               Share your details and dental concern. Our clinic team will review your request and contact you soon.
             </p>
-            <div className="mt-8 rounded-[24px] bg-white/70 p-5 text-sm leading-7 text-[#34445B]">
-              <p className="font-semibold text-[#2C2C2C]">Dentique Smiles</p>
-              <p>Shop 31, 1st Floor, The Vista by Majestique, near Kapila Resort, Upper Kharadi Road, Pune.</p>
-              <p>9960003362</p>
-              <p>Painless dentistry, cosmetic dentistry, and pediatric care.</p>
+            <div className="reveal mt-8 space-y-3 rounded-[24px] bg-white/70 p-5 text-sm leading-7 text-[#34445B]">
+              <p className="font-semibold text-[#2C2C2C]">Dentique Smiles - Family Dental Studio</p>
+              <p>Dr. Sayali Khedkar | Dental Surgeon</p>
+              <p className="flex gap-3">
+                <MapPin className="mt-1 shrink-0 text-[#4A9B7F]" size={16} />
+                <span>Shop 31, 1st Floor, The Vista by Majestique, near Kapila Resort, Upper Kharadi Road, Pune.</span>
+              </p>
+              <p className="flex items-center gap-3">
+                <Phone className="shrink-0 text-[#4A9B7F]" size={16} />
+                <span>9960003362</span>
+              </p>
+              <p className="flex items-center gap-3">
+                <Mail className="shrink-0 text-[#4A9B7F]" size={16} />
+                <a className="hover:text-[#4A9B7F]" href="mailto:dentiquesmiles32@gmail.com">
+                  dentiquesmiles32@gmail.com
+                </a>
+              </p>
+              <div>
+                <p className="font-semibold text-[#2C2C2C]">Hours</p>
+                <p>Mon - Sun 10:00 AM - 9:00 PM</p>
+              </div>
+              <div>
+                <p className="font-semibold text-[#2C2C2C]">Specialties</p>
+                <p>Painless Dentistry</p>
+                <p>Topical Anaesthesia</p>
+                <p>Advanced Equipment</p>
+                <p>Safe, Hygienic and Reliable Care</p>
+                <p>Patient Comfort</p>
+              </div>
             </div>
           </section>
 
-          <form onSubmit={handleSubmit} className="space-y-5 p-8 sm:p-10">
-            <div className="grid gap-5 md:grid-cols-2">
-              <div>
+          <form onSubmit={handleSubmit} className="reveal space-y-5 p-8 sm:p-10">
+            <div className="booking-fields grid gap-5 md:grid-cols-2">
+              <div className="reveal">
                 <Field icon={<User size={16} className="text-[#4A9B7F]" />}>Full Name</Field>
                 <input
                   required
                   value={form.name}
                   onChange={(e) => updateField("name", e.target.value)}
-                  className="w-full rounded-2xl border border-black/5 bg-[#FAFAF8] px-5 py-4 outline-none transition focus:ring-2 focus:ring-[#E8F5F0]"
+                  className="form-field"
                   placeholder="Enter your name"
                 />
               </div>
 
-              <div>
+              <div className="reveal">
                 <Field icon={<Phone size={16} className="text-[#4A9B7F]" />}>Phone Number</Field>
                 <input
                   required
                   value={form.phone}
                   onChange={(e) => updateField("phone", e.target.value)}
-                  className="w-full rounded-2xl border border-black/5 bg-[#FAFAF8] px-5 py-4 outline-none transition focus:ring-2 focus:ring-[#E8F5F0]"
+                  className="form-field"
                   placeholder="Enter your phone number"
                 />
               </div>
             </div>
 
-            <div>
+            <div className="reveal">
               <Field icon={<Mail size={16} className="text-[#4A9B7F]" />}>Email</Field>
               <input
                 type="email"
                 value={form.email}
                 onChange={(e) => updateField("email", e.target.value)}
-                className="w-full rounded-2xl border border-black/5 bg-[#FAFAF8] px-5 py-4 outline-none transition focus:ring-2 focus:ring-[#E8F5F0]"
+                className="form-field"
                 placeholder="Enter your email"
               />
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2">
-              <div>
+            <div className="booking-fields grid gap-5 md:grid-cols-2">
+              <div className="reveal">
                 <Field icon={<Calendar size={16} className="text-[#4A9B7F]" />}>Preferred Date</Field>
                 <input
                   required
                   type="date"
                   value={form.date}
                   onChange={(e) => updateField("date", e.target.value)}
-                  className="w-full rounded-2xl border border-black/5 bg-[#FAFAF8] px-5 py-4 outline-none transition focus:ring-2 focus:ring-[#E8F5F0]"
+                  className="form-field"
                 />
               </div>
 
-              <div>
+              <div className="reveal">
                 <Field icon={<Clock size={16} className="text-[#4A9B7F]" />}>Preferred Time</Field>
                 <input
                   required
                   type="time"
                   value={form.time}
                   onChange={(e) => updateField("time", e.target.value)}
-                  className="w-full rounded-2xl border border-black/5 bg-[#FAFAF8] px-5 py-4 outline-none transition focus:ring-2 focus:ring-[#E8F5F0]"
+                  className="form-field"
                 />
               </div>
             </div>
 
-            <div>
+            <div className="reveal">
               <Field icon={<MessageSquare size={16} className="text-[#4A9B7F]" />}>
                 Your Problem
               </Field>
@@ -193,17 +265,20 @@ export default function BookAppointment() {
                 rows={5}
                 value={form.concern}
                 onChange={(e) => updateField("concern", e.target.value)}
-                className="w-full resize-none rounded-2xl border border-black/5 bg-[#FAFAF8] px-5 py-4 outline-none transition focus:ring-2 focus:ring-[#E8F5F0]"
+                className="form-field resize-none"
                 placeholder="Tell us what dental problem you are facing"
               />
             </div>
 
             <button
               disabled={submitting}
-              className="w-full cursor-pointer rounded-2xl bg-[#E8F5F0] py-4 font-semibold text-[#2C2C2C] shadow-md transition-all hover:bg-[#d4eae0] disabled:cursor-wait disabled:opacity-60"
+              className="premium-cta w-full cursor-pointer py-4 font-semibold disabled:cursor-wait disabled:opacity-60"
             >
               {submitting ? "Submitting..." : "Book Now"}
             </button>
+            <p className="text-center text-sm text-[#6F8377]">
+              {"\uD83D\uDD12"} Your information is safe and will never be shared
+            </p>
           </form>
         </motion.div>
       </div>

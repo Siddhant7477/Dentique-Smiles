@@ -145,7 +145,7 @@ export default function Dashboard() {
               placeholder="Enter Access Code"
               value={accessCode}
               onChange={(e) => setAccessCode(e.target.value)}
-              className="w-full rounded-2xl border border-black/5 bg-[#FAFAF8] px-6 py-4 text-center text-2xl tracking-widest transition-all focus:outline-none focus:ring-2 focus:ring-[#E8F5F0]"
+              className="form-field text-center text-2xl tracking-widest"
               autoFocus
             />
             <button className="w-full cursor-pointer rounded-2xl bg-[#E8F5F0] py-4 font-medium text-[#2C2C2C] shadow-md transition-all hover:bg-[#d4eae0]">

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -16,12 +16,183 @@
   body {
     margin: 0;
     background: #f3f3f1;
-    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    font-family: "Outfit", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
+  h1,
+  h2,
+  h3 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+  }
+
   a {
     text-decoration: none;
+  }
+}
+
+@layer components {
+  .glass-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    border-bottom: 1px solid rgba(29, 61, 46, 0.08);
+    background: rgba(250, 250, 248, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: background 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+  }
+
+  .glass-nav.scrolled {
+    background: rgba(250, 250, 248, 0.88);
+    border-color: rgba(29, 61, 46, 0.14);
+    box-shadow: 0 18px 42px rgba(29, 61, 46, 0.12);
+  }
+
+  .premium-cta {
+    border-radius: 50px;
+    background: #1d3d2e;
+    box-shadow: 0 16px 34px rgba(29, 61, 46, 0.22);
+    color: white;
+    transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  }
+
+  .premium-cta:hover {
+    background: #5a9070;
+    box-shadow: 0 20px 42px rgba(90, 144, 112, 0.28);
+    transform: translateY(-2px);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .service-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .service-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: #1d3d2e;
+    opacity: 0;
+    transition: opacity 220ms ease;
+  }
+
+  .service-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .service-card h3,
+  .service-card p,
+  .service-card a {
+    transition: color 220ms ease;
+  }
+
+  .service-card:hover::before {
+    opacity: 1;
+  }
+
+  .service-card:hover h3,
+  .service-card:hover p,
+  .service-card:hover a {
+    color: white;
+  }
+
+  .form-field {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgba(29, 61, 46, 0.08);
+    background: #fafaf8;
+    padding: 1rem 1.25rem;
+    outline: none;
+    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  }
+
+  .form-field::placeholder {
+    color: rgba(90, 144, 112, 0.58);
+  }
+
+  .form-field:focus {
+    border-color: #5a9070;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(90, 144, 112, 0.12);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 620ms ease, transform 620ms ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .booking-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 60;
+    border-radius: 50px;
+    background: #1d3d2e;
+    color: white;
+    padding: 0.875rem 1.35rem;
+    box-shadow: 0 18px 45px rgba(29, 61, 46, 0.25);
+    transform: translate(-50%, 120%);
+    opacity: 0;
+    transition: transform 240ms ease, opacity 240ms ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .booking-toast.show {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+
+  .social-square {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.14);
+    color: white;
+    transition: background 180ms ease, transform 180ms ease;
+  }
+
+  .social-square:hover {
+    background: #5a9070;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 640px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .nav-links {
+      display: none;
+    }
+
+    .booking-fields {
+      grid-template-columns: 1fr;
+    }
+
+    .booking-toast {
+      width: calc(100% - 32px);
+      text-align: center;
+      white-space: normal;
+    }
   }
 }
