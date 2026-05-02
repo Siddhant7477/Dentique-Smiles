@@ -185,7 +185,7 @@ function Home() {
   return (
     <div className="min-h-screen bg-page font-sans text-slate">
       <header className={`glass-nav px-5 py-4 sm:px-8 ${scrolled ? "scrolled" : ""}`}>
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
+        <div className="header-inner mx-auto flex max-w-6xl items-center justify-between gap-4">
           <Brand compact />
           <nav className="nav-links flex flex-wrap items-center gap-4 sm:gap-8 text-sm font-semibold text-forest">
             <Link
