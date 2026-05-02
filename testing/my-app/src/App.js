@@ -187,25 +187,25 @@ function Home() {
       <header className={`glass-nav px-5 py-4 sm:px-8 ${scrolled ? "scrolled" : ""}`}>
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
           <Brand compact />
-          <nav className="nav-links flex items-center gap-4 sm:gap-8 text-sm font-semibold text-forest">
+          <nav className="nav-links flex flex-wrap items-center gap-4 sm:gap-8 text-sm font-semibold text-forest">
+            <Link
+              className="premium-cta px-7 py-4 text-center text-base font-bold leading-5 sm:px-10"
+              to="/book"
+            >
+              Book
+              <br />
+              Appointment
+            </Link>
+            <Link className="transition hover:text-sage" to="/dashboard">
+              Doctor Access
+            </Link>
             <a className="transition hover:text-sage" href="#services" onClick={scrollToSection("services")}>
               Services
             </a>
             <a className="transition hover:text-sage" href="#contact" onClick={scrollToContact}>
               Contact
             </a>
-            <Link className="transition hover:text-sage" to="/dashboard">
-              Doctor Access
-            </Link>
           </nav>
-          <Link
-            className="premium-cta px-7 py-4 text-center text-base font-bold leading-5 sm:px-10"
-            to="/book"
-          >
-            Book
-            <br />
-            Appointment
-          </Link>
         </div>
       </header>
 
